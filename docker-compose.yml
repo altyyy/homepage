@@ -1,0 +1,47 @@
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - backend
+    ports:
+      - "27017:27017"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: fastapi-backend
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://mongo:27017
+    networks:
+      - backend
+    volumes:
+      - ./backend/app:/app/app
+    ports:
+      - "8000:8000"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: react-frontend
+    networks:
+      - frontend
+    volumes:
+      - ./frontend/src:/app/src   # ローカルの src フォルダをコンテナの /app/src フォルダにマウント
+    ports:
+      - "3000:3000"
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
+
+volumes:
+  mongo-data:
+    driver: local

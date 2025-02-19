@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+motor   # MongoDBとの接続用
+pydantic
+python-dotenv
